@@ -3,10 +3,8 @@
 # beginning of the main flow
 
 SRC_DIR=$1
-echo $SRC_DIR
 TASK_ID=$2
 TEMP_PATH=$3
-echo $TASK_ID
 CONFIG_PATH=${SRC_DIR}/cvat-tup.cfg
 CLASSES_JSON_PATH=${SRC_DIR}/classes.json
 
@@ -37,26 +35,31 @@ download_annotation() {
   unzip ${TEMP_PATH} -d $(dirname ${TEMP_PATH})
 }
 
-echo -e "${INF}Loading configuration from ${CONFIG_PATH}.${END}"
-
-if [ -f ${CONFIG_PATH} ]; then
-	while read LINE; do declare "$LINE"; done < ${CONFIG_PATH}
-
-	if [[ -z "${cvat_credentials}" ]]; then
-		echo -e "${RED}Please provide 'credentials' for CVAT login, in ${CONFIG_PATH}${END}"
-		exit 1
-	fi
-	if [[ -z "${cvat_cli_path}" ]]; then
-		echo -e "${RED}Please provide the path to CVAT CLI utility, 'cvat_cli_path' in ${CONFIG_PATH}${END}"
-		exit 1
-	fi
+if [ -f ${TEMP_PATH} ]; then
+    echo -e "${INF} $TEMP_PATH exists.${END}"
 else
-	echo -e "${ERR}Missing configuration file, creating a template at ${CONFIG_PATH} ${END}"
-	cp ${DIRPATH}/../share/config_template.cfg ${CONFIG_PATH}
-	exit 1
+    echo -e "${INF} $TEMP_PATH does not exist.${END}"
+    echo -e "${INF}Loading configuration from ${CONFIG_PATH}.${END}"
 
+    if [ -f ${CONFIG_PATH} ]; then
+      while read LINE; do declare "$LINE"; done < ${CONFIG_PATH}
+
+      if [[ -z "${cvat_credentials}" ]]; then
+        echo -e "${RED}Please provide 'credentials' for CVAT login, in ${CONFIG_PATH}${END}"
+        exit 1
+      fi
+      if [[ -z "${cvat_cli_path}" ]]; then
+        echo -e "${RED}Please provide the path to CVAT CLI utility, 'cvat_cli_path' in ${CONFIG_PATH}${END}"
+        exit 1
+      fi
+    else
+      echo -e "${ERR}Missing configuration file, creating a template at ${CONFIG_PATH} ${END}"
+      cp ${DIRPATH}/../share/config_template.cfg ${CONFIG_PATH}
+      exit 1
+
+    fi
+
+    echo -e "${INF}Downloading annotation from CVAT.${END}"
+    existing_tasks=$(download_annotation)
+    echo $existing_tasks
 fi
-
-echo -e "${INF}Downloading annotation from CVAT.${END}"
-existing_tasks=$(download_annotation)
-echo $existing_tasks
