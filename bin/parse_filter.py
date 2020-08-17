@@ -5,6 +5,7 @@ import requests
 import sys
 import argparse
 import subprocess
+import os
 log = logging.getLogger(__name__)
 
 
@@ -74,6 +75,8 @@ if __name__ == '__main__':
     task_list, task_ids, save_path = parse_filter_names(unknown, date_match, index_match)
 
     # Write task list to file if needed
+    if not os.path.exists('output'):
+        os.mkdir('output')
     with open('output/filtered_tasks.txt', 'w') as f:
         for task in task_list:
             for item in task:
