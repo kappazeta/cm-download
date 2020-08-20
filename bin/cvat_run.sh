@@ -2,7 +2,7 @@
 
 # beginning of the main flow
 if [ "$#" -ne 1 ]; then
-    echo "Usage: ./cvat_download.sh SRC_DIR"
+    echo "Usage: ./cvat_run.sh SRC_DIR"
     exit 1
 fi
 
