@@ -20,8 +20,8 @@ PATH_ROOT=$(realpath "$DIRPATH/../")
 HAVE_CONDA_ENV=false
 
 # Configuration parameters
-cvat_host_addr="localhost"
-cvat_host_port=8080
+cvat_host_addr="127.0.0.1"
+cvat_host_port=8090
 
 # ANSI colors
 INF="\e[32m"
@@ -63,6 +63,7 @@ else
 
 fi
 
+echo -e "${INF}Get ${cvat_cli_path} ${cvat_host_addr} ${cvat_host_port} ${cvat_credentials} ${END}"
 echo -e "${INF}Get list of existing tasks.${END}"
 existing_tasks=$(list_tasks | grep ,)
 echo -e "${INF}Call parse and filter script.${END}"

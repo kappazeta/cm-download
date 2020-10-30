@@ -6,3 +6,4 @@ dependencies:
   - python>=3.5
   - pillow>=6.2.0
   - requests>=2.20.1
+  - tqdm

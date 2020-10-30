@@ -6,6 +6,7 @@ import sys
 import argparse
 import subprocess
 import os
+from tqdm import tqdm
 log = logging.getLogger(__name__)
 
 
@@ -29,6 +30,8 @@ def check_match_file(item, date_match, index_match):
 def get_tile_folder(item):
     """ Get which part of tile it is as folder name """
     splitted_name = item[1].rsplit('_', 3)
+    splitted_name[2] = str(int(splitted_name[2])//256)
+    splitted_name[3] = str(int(splitted_name[3]) // 256)
     folder_str = '_'.join(map(str, splitted_name[1:4]))
     return folder_str
 
@@ -43,7 +46,7 @@ def parse_filter_names(task_output, date_match, index_match):
     task_list = []
     task_ids = []
     list_full_path = []
-    for item in task_output:
+    for item in tqdm(task_output, desc='Parsing'):
         item = item.split(",")
         if len(item) == 3:
             if check_match_file(item, date_match, index_match):
@@ -78,13 +81,13 @@ if __name__ == '__main__':
     if not os.path.exists('output'):
         os.mkdir('output')
     with open('output/filtered_tasks.txt', 'w') as f:
-        for task in task_list:
+        for task in tqdm(task_list, desc='File writing'):
             for item in task:
                 f.write(item)
                 f.write(",")
             f.write("\n")
 
-    for count, id in enumerate(task_ids):
+    for count, id in tqdm(enumerate(task_ids), desc='Downloading'):
         #task_id = 313 # 313,S2A_T35VME_20200509T111504_tile_256_2816,completed,
         subprocess.check_call(['bin/annotation_download.sh', args.directory, id, save_path[count]])
 
