@@ -1,4 +1,4 @@
-name: cvat-cli
+name: cm-download
 channels:
   - conda-forge
   - defaults
@@ -7,3 +7,6 @@ dependencies:
   - pillow>=6.2.0
   - requests>=2.20.1
   - tqdm
+  - pip
+  - pip:
+    - segments-ai
